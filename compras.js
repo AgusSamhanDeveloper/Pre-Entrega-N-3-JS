@@ -93,7 +93,7 @@ function listaProductos(array){
         ProductoNuevoDiv.className = "col-12 col-md-6 col-lg-4 my-2"
         ProductoNuevoDiv.innerHTML = `
             <div id="${producto.id}" class="card" style="width: 18rem;">
-                    <img class="card-img-top img-fluid" style="height: 200px;"src="../img/${producto.imagen}" alt="${producto.nombre}">
+                    <img class="card-img-top img-fluid" style="height: 200px;"src="img/${producto.imagen}" alt="${producto.nombre}">
                     <div class="card-body">
                         <h4 class="card-title">${producto.nombre}</h4>
                         <p>Categoria: ${producto.categoria}</p>
