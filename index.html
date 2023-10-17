@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Iconos-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <!--Toastify-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <!--Bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <!--CSS-->
@@ -49,11 +51,27 @@
           </div>
         </div> 
       </nav>
+       <!--FECHA-->
+       <div class="container m-4">
+        <div class="row">
+            <div class="col-2">
+              <p id="fecha" class=" fs-2"></p>
+            </div>
+          
+        </div>
+      </div>
     <!--CONTAINER Productos-->
+    <h3 id="loaderTexto" class="text-center mb-3 text-dark"> Cargando ofertas y productos...</h3>
     <div class="container">
         <div id="productos" class="row">
 
         </div>
+    </div>
+    <!--Loader-->
+    <div id="loader" class="d-flex justify-content-center">
+      <div class="spinner-border text-dark" role="status">
+        <span class="visually-hidden"></span>
+      </div>
     </div>
     <!--Modals-->
     <!--Modal Agregar Libro-->
@@ -69,7 +87,7 @@
     <form id="formInsertarNuevoProducto" class="my-4">
       <div class="mb-3">
         <label for="nombre_del_producto" class="form-label">Nombre del Producto</label>
-        <input type="text" class="form-control" id="nombre_del_productoInput" aria-describedby="nombre_del_producto">
+        <input type="text" class="form-control" id="nombreInput" aria-describedby="nombre_del_producto">
         
       </div>
       <div class="mb-3">
@@ -118,11 +136,18 @@
           </div>
         </div>
       </div>
+      <!--Luxon-->
+      <script src="
+  https://cdn.jsdelivr.net/npm/luxon@3.4.3/build/global/luxon.min.js
+  "></script>
     <!--Script de Bootstrap-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
     </script>  
     <script src="darkmode.js"></script>
-    <script src="compras.js"></script>          
+    <script src="compras.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!--Toastify-->   
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>   
 </body>
 </html>

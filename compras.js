@@ -1,6 +1,8 @@
-//Simulador de compras
-//Se busca simular un sitio de compras online de articulos de supermercado
-//Creacion de clase constructora
+//Simulador Compra de supermercado online.
+
+
+
+//Clase constructora y sus respectivos atributos y metodos
 class Producto {
     constructor(id, nombre, precio, categoria, marca, imagen){
         this.id = id,
@@ -8,22 +10,32 @@ class Producto {
         this.precio = precio,
         this.categoria = categoria,
         this.marca = marca,
-        this.imagen = imagen 
+        this.imagen = imagen,
+        this.cantidad = 1
+    }
+    //Metodos
+    sumarUnidad(){
+        this.cantidad++
+        return this.cantidad
+    }
+    restarUnidad(){
+        this.cantidad = this.cantidad - 1
+        return this.cantidad
     }
 }
 
-//Instanciacion de objetos
 
-const producto1 = new Producto(1, "Jabon", 300, "Limpieza", "Skip", "skip.png")
-const producto2 = new Producto(2, "Desodorante", 500, "Higiene", "Rexona", "rexona.png")
-const producto3 = new Producto(3, "Dentrifico", 350, "Higiene", "Colgate", "dentrifico.webp")
-const producto4 = new Producto(4, "Leche", 550, "Alimentos", "Milkaut", "lecheMilkaut.png")
-const producto5 = new Producto(5, "Yerba", 700, "Alimentos", "Playadito", "playadito.png")
-const producto6 = new Producto(6, "Agua", 650, "Bebidas", "Villa del Sur", "villa.png")
-const producto7 = new Producto(7, "Galletas Surtidas", 300, "Alimentos", "Bagley", "surtidas.jpg")
-const producto8 = new Producto(8, "Azucar", 250, "Alimentos", "Arcor", "azucar.png")
-const producto9 = new Producto(9, "Detergente", 100, "Limpieza", "Ala", "detergente.png")
-const producto10 = new Producto(10, "Jugo", 1200, "Bebidas", "Citric", "jugo.png")
+const cargarGondola = async()=>{
+    const resp = await fetch("producto.json")
+    const dataProducto = await resp.json()
+    for(let product of dataProducto){
+        let productonuevo = new Producto(product.id, product.nombre, product.precio, product.categoria, product.marca, product.imagen)
+        gondola.push(productonuevo)
+    }
+    localStorage.setItem("gondola", JSON.stringify(gondola))
+}
+
+
 
 //Declaracion de contenedor de objetos
 let gondola = []
@@ -34,61 +46,28 @@ if(localStorage.getItem("gondola")){
         gondola.push(productStorage)
     }
 }else{
-    gondola.push(producto1,producto2,producto3,producto4,producto5,producto6,producto7,producto8,producto9,producto10)
-    localStorage.setItem("gondola", JSON.stringify(gondola))
+    cargarGondola(gondola)
 }
 
-//Captura por ID
-let carrito = JSON.parse(localStorage.getItem("carrito")) ?? []
-let supermercado = JSON.parse(localStorage.getItem("gondola")) || ([].push(producto1,producto2,producto3,producto4,producto5,producto6,producto7,producto8,producto9,producto10))
+//Captura de DOM
+let productosCarrito = JSON.parse(localStorage.getItem("carrito")) ?? []
+let containerProductos = document.getElementById("productos")
 let formInsertarNuevoProducto = document.getElementById("formInsertarNuevoProducto")
 let guardarProductoBtn = document.getElementById("guardarProductoBtn")
-let containerProductos = document.getElementById("productos")
+let selectOrden = document.getElementById("selectOrden")
 let modalbodyCarrito = document.getElementById("modalbodyCarrito")
 let botonCarrito = document.getElementById("botonCarrito")
-
-//Funcion para agregar un producto nuevo
-function agregarProducto(array){
-    let nombre = document.getElementById("nombre_del_productoInput")
-    let precio = document.getElementById("precioInput")
-    let categoria = document.getElementById("categoriaInput")
-    let marca = document.getElementById("marcaInput")
-
-    const nuevoProducto = new Producto(gondola.length+1, nombre.value, parseInt(precio.value),categoria.value, marca.value, "productonuevo.png")
-    array.push(nuevoProducto)
-    nombre.value=""
-    precio.value=""
-    categoria.value=""
-    marca.value=""
-    localStorage.setItem("gondola", JSON.stringify(gondola))
-}
-guardarProductoBtn.addEventListener("click", () => 
-{
-    agregarProducto(gondola)
-    listaProductos(gondola)
-})
-
-//Funcion para eliminar un producto
-
-function eliminarProducto(array){
-    listaProductos(array)
-    let idEliminar = parseInt(prompt(`Elija por ID el articulo que desea eliminar`))
-    for (let elem of array){
-        if(elem.id == idEliminar){
-            let indice = array.indexOf(elem)
-            array.splice(indice, 1)
-            listaProductos(array)
-        }
-    }
-}
+let botonFinalizarCompra = document.getElementById("botonFinalizarCompra")
+let fechaDiv = document.getElementById("fecha")
+let loaderTexto = document.getElementById("loaderTexto")
+let loader = document.getElementById("loader")
 
 
 //Lista de Productos mostrada en DOM
-
 function listaProductos(array){
     containerProductos.innerHTML = ""
     for(let producto of array){
-        
+        //Card Visualizada en el DOM
         let ProductoNuevoDiv= document.createElement("div")
         ProductoNuevoDiv.className = "col-12 col-md-6 col-lg-4 my-2"
         ProductoNuevoDiv.innerHTML = `
@@ -110,20 +89,41 @@ function listaProductos(array){
     }
 }
 
+
 //Funcion Agregar al carrito.
 function agregarAlCarrito(elemento){
-    let productoagregado  = carrito.find((producto) => producto.id == elemento.id)
+    let productoagregado  = productosCarrito.find((producto) => producto.id == elemento.id)
 
     productoagregado == undefined ?
     (
-        carrito.push(elemento),
-        localStorage.setItem("carrito", JSON.stringify(carrito)),
-        console.log(carrito)) :
-        alert(`El producto ${elemento.nombre} ya existe en el carrito`)
+        productosCarrito.push(elemento),
+        localStorage.setItem("carrito", JSON.stringify(productosCarrito)),
+        Toastify({
+            text: `El producto ${elemento.nombre} ha sido sumado al carrito`,
+            duration: 3000,
+            gravity: "bottom", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            style: {
+              background: "linear-gradient(to right, #00b09b, #96c93d)",
+            },
+          }).showToast()) :
+          Toastify({
+            text: `El producto ${elemento.nombre} ya existe en el carrito`,
+            duration: 2500,
+            gravity: "top", // `top` or `bottom`
+            position: "center", // `left`, `center` or `right`
+            style: {
+              background: "linear-gradient(to right, red, orange)",
+              color: "black",
+              fontWeight: "bold"
+            },
+          }).showToast()
 }
+//Funcion que permite visulizar las cards de los prductos que agregamos al carrito y ademas permite sumar, restar o eliminar productos del mismo.
 function agregarProdCarrito(array){
     modalbodyCarrito.innerHTML = ""
-    array.forEach((productoCarrito) => {
+    array.forEach(
+        (productoCarrito) => {
         modalbodyCarrito.innerHTML += `<div class="card border-primary mb-3" id ="productoCarrito${productoCarrito.id}" style="max-width: 540px;">
 
         <img class="card-img-top" height="300px" src="img/${productoCarrito.imagen}" alt="">
@@ -136,56 +136,112 @@ function agregarProdCarrito(array){
                
                <p class="card-text">${productoCarrito.categoria}</p>
 
-               <p class="card-text">$${productoCarrito.precio}</p> 
-               
-                <button class= "btn btn-danger" id="botonEliminar${productoCarrito.id}"><i class="fas fa-trash-alt"></i></button>
+               <p class="card-text">Precio por Unidad $${productoCarrito.precio}</p> 
+
+               <p class="card-text">Total de Unidades ${productoCarrito.cantidad}</p>
+               <p class="card-text">Subtotal ${productoCarrito.cantidad * productoCarrito.precio}</p>
+                <button class= "btn btn-dark" id="botonSumarUnidad${productoCarrito.id}"><i class=""></i>+1</button>
+                <button class= "btn btn-dark" id="botonEliminarUnidad${productoCarrito.id}"><i class=""></i>-1</button>
+                <button class= "btn btn-dark" id="botonEliminar${productoCarrito.id}"><i class="fas fa-trash-alt"></i></button>
 
         </div>    
 
    </div>`
-    })
-    calcularTotal(array)
+    }) 
+
+    array.forEach(
+        (productoCarrito) => {
+            document.getElementById(`botonSumarUnidad${productoCarrito.id}`).addEventListener("click",()=>{
+                productoCarrito.sumarUnidad()
+                localStorage.setItem("carrito", JSON.stringify(array))
+                agregarProdCarrito(array)
+            })
+            document.getElementById(`botonEliminarUnidad${productoCarrito.id}`).addEventListener("click",
+            ()=>{
+                let cantidadActual = productoCarrito.cantidad
+                if(cantidadActual <= 1){
+                    let cardProducto = document.getElementById(`productoCarrito${productoCarrito.id}`)
+                    cardProducto.remove()
+                    let posicion = array.indexOf(productoCarrito)
+                    array.splice(posicion, 1)
+                    localStorage.setItem("carrito", JSON.stringify(array))
+                    calcularTotal(array)
+                }else{
+                    productoCarrito.restarUnidad()
+                }
+                localStorage.setItem("carrito", JSON.stringify(array))
+                agregarProdCarrito(array)
+            })
+            document.getElementById(`botonEliminar${productoCarrito.id}`).addEventListener("click", () =>{
+                let cardProducto = document.getElementById(`productoCarrito${productoCarrito.id}`)
+                cardProducto.remove()
+                let posicion = array.indexOf(productoCarrito)
+                array.splice(posicion, 1)
+                localStorage.setItem("carrito", JSON.stringify(array))
+                calcularTotal(array) 
+            })
+        }
+    )
+    calcularTotal(array)    
 }
 
 
-
+//Funcion que calcula el total parcial y final del carrito.
 function calcularTotal(array){
-    //function con spread (no necesariamente debe ser así)
-    
     const totalReduce = array.reduce(
-        //dos parámetros: funcion e inicio de valor del acumulador
-        //atención que si su carrito maneja cantidad, debe ser precio *cantidad
         (acumulador, producto)=>
-        {return acumulador + producto.precio},
+        {return acumulador + (producto.precio * producto.cantidad)},
         0
     )
     totalReduce > 0 ? precioTotal.innerHTML = `<strong>El total de su compra es: ${totalReduce}</strong>` : precioTotal.innerHTML = `No hay productos en el carrito` 
+    return totalReduce
 }
 
-//Funcion para buscar productos a traves del nombre
-function buscarProducto(array){
-    let productoBuscado = prompt("Ingresa el nombre del producto que buscas")
-    let busqueda = array.find(
-        (elem) =>{return elem.nombre.toLowerCase() == productoBuscado.toLowerCase()}
-    )
-    if (busqueda == undefined){
-        alert(`Lo sentimos, no contamos con stock de ${productoBuscado}`)
-    }else{
-        alert(busqueda)
-    }
+
+//Funcion para agregar un producto nuevo
+function agregarProducto(array){
+    let nombre = document.getElementById("nombreInput")
+    let precio = document.getElementById("precioInput")
+    let categoria = document.getElementById("categoriaInput")
+    let marca = document.getElementById("marcaInput")
+
+    const nuevoProducto = new Producto(gondola.length+1, nombre.value, parseInt(precio.value),categoria.value, marca.value, "productonuevo.png")
+    array.push(nuevoProducto)
+    nombre.value=""
+    precio.value=""
+    categoria.value=""
+    marca.value=""
+
+    Swal.fire({
+        title: "Excelente has agregado un nuevo producto",
+        text: `El producto ${nuevoProducto.nombre} de la categoria ${nuevoProducto.categoria.toLowerCase()} se ha añadido a la gondola.`,
+        imageUrl: `img/${nuevoProducto.imagen}`,
+        imageHeight: 350,
+        imageAlt: `Imagen Producto Nuevo`,
+        showConfirmButton: false,
+        timer: 2500
+    })
+    localStorage.setItem("gondola", JSON.stringify(gondola))
 }
 
+// Funcion que finalzia la compra y muestra un cartel emergente que avisa el evento.
+function finalizarCompra(array){
+    let total = calcularTotal(array)
+    Swal.fire({
+        text: `Gracias por su compra. Su total fue: ${total}`
+    })
+    productosCarrito = []
+    localStorage.removeItem("carrito")
+}
+
+//Funcion que filtra por nombre los productos que el usuario busca a traves del sitio.
 function buscarInfo(buscado,array){
    let coincidencias =  array.filter(
         (producto) => {return producto.nombre.toLowerCase().includes(buscado.toLowerCase()) || producto.categoria.toLowerCase().includes(buscado.toLowerCase())}
     )
-    coincidencias.length > 0 ? (console.log(coincidencias), listaProductos(coincidencias)) : listaProductos(array), coincidencias
+    coincidencias.length > 0 ? (listaProductos(coincidencias), coincidenciasDiv.innerHTML ="") : (listaProductos(array), coincidencias.innerHTML = `<h3>No hay coincidencias con su búsqueda, este es nuestro catálogo completo</h3>`)
 }
 
-buscador.addEventListener("input", () => {
-    console.log(buscador.value)
-    buscarInfo(buscador.value,gondola)
-})
 
 //Funcion para filtrar productos por categoria
 function buscarCategoria(array){
@@ -236,7 +292,9 @@ function compararPrecioMayorAMenor(array){
             (prec1, prec2) => prec2.precio - prec1.precio
         )
     if (busqueda.length == 0){
-        console.log(`No es posible comparar ese producto ya que no existe en nuestra tienda`)
+        Swal.fire({
+            title: `No es posible comparar ese producto ya que no existe en nuestra tienda`,
+        })
     }
     else{
         listaProductos(arrayMenorMayor)
@@ -244,7 +302,6 @@ function compararPrecioMayorAMenor(array){
 }
 
 //Menu switch para ordenar la lista de productos
-let selectOrden = document.getElementById("selectOrden")
 selectOrden.addEventListener("change", () => {
     switch(selectOrden.value){
         case "1":
@@ -264,8 +321,27 @@ selectOrden.addEventListener("change", () => {
             break
     }
 })
+//Eventos
 botonCarrito.addEventListener("click", () => {
-    agregarProdCarrito(carrito)
+    agregarProdCarrito(productosCarrito)
 })
 
-listaProductos(gondola)
+guardarProductoBtn.addEventListener("click", () => 
+{
+    agregarProducto(gondola)
+    listaProductos(gondola)
+})
+
+buscador.addEventListener("input", () => {
+    console.log(buscador.value)
+    buscarInfo(buscador.value,gondola)
+})
+botonFinalizarCompra.addEventListener("click", () => {
+    finalizarCompra(productosCarrito)
+})
+
+setTimeout(()=>{
+    loaderTexto.innerText = `Productos Disponibles`
+    loader.remove()
+    listaProductos(gondola)
+},5000)

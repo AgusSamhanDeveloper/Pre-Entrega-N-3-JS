@@ -1,0 +1,93 @@
+[
+    {
+        "id": 1,
+        "nombre":"Jabon",
+        "precio":300,
+        "categoria":"Higiene",
+        "marca":"Skip",
+        "imagen":"skip.png"
+    },
+    {
+        "id": 2,
+        "nombre":"Desodorante",
+        "precio": 150,
+        "categoria":"Higiene",
+        "marca":"Rexona",
+        "imagen":"rexona.png"
+    },
+    {
+        "id": 3,
+        "nombre":"Dentrifico",
+        "precio":350,
+        "categoria":"Higiene",
+        "marca":"Colgate",
+        "imagen":"dentrifico.webp"
+    },
+    {
+        "id": 4,
+        "nombre":"Leche",
+        "precio":550,
+        "categoria":"Alimentos",
+        "marca":"Milkaut",
+        "imagen":"lecheMilkaut.png"
+    },
+    {
+        "id": 5,
+        "nombre":"Yerba",
+        "precio":1200,
+        "categoria":"Alimentos",
+        "marca":"Playadito",
+        "imagen":"playadito.png"
+    },
+    {
+        "id": 6,
+        "nombre":"Agua",
+        "precio":320,
+        "categoria":"Bebidas",
+        "marca":"Villa del Sur",
+        "imagen":"villa.png"
+    },
+    {
+        "id": 7,
+        "nombre":"Galletas Surtidas",
+        "precio":980,
+        "categoria":"Alimentos",
+        "marca":"Bagley",
+        "imagen":"surtidas.jpg"
+    }
+    ,
+    {
+        "id": 8,
+        "nombre":"Azucar",
+        "precio":525,
+        "categoria":"Alimentos",
+        "marca":"Arcor",
+        "imagen":"azucar.png"
+    }
+    ,
+    {
+        "id": 9,
+        "nombre":"Detergente",
+        "precio":430,
+        "categoria":"Limpieza",
+        "marca":"Ala",
+        "imagen":"detergente.png"
+    }
+    ,
+    {
+        "id": 10,
+        "nombre":"Jugo",
+        "precio":730,
+        "categoria":"Bebidas",
+        "marca":"Citric",
+        "imagen":"jugo.png"
+    },
+    {
+        "id": 11,
+        "nombre": "Agua",
+        "precio": 340,
+        "categoria": "Bebidas",
+        "marca" : "villavicencio",
+        "imagen": "villa.png"
+    }
+]

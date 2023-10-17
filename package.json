@@ -1,0 +1,16 @@
+{
+  "name": "supermercado",
+  "version": "1.0.0",
+  "description": "proyectofinaljs",
+  "main": "compras.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AguSSamhan",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.3.2",
+    "luxon": "^3.4.3",
+    "sweetalert2": "^11.7.32"
+  }
+}
